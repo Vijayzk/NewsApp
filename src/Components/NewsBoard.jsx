@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import NewsItem from './NewsItem';
+import axios from 'axios'
 
 const NewsBoard = ({category}) => {
 
   const[articles,setArticles] = useState([])
-  useEffect(()=>{
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`;
-    fetch(url).then(res => res.json()).then(data => setArticles(data.articles)).catch((error) => console.log(error))
 
+  const fetchNews = async()=>{
+    try {
+      const data = await axios.get(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`)
+      setArticles(data.data.articles)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  useEffect(()=>{
+    fetchNews();
   },[category]) 
 
   return (
